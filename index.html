@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LoL AI Runes Recomendation</title>
+  <!-- ONNX Runtime Web -->
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <!-- TOP: BANS -->
+    <section class="top">
+      <div class="sideBar">
+        <div class="title blue">BLUE BANS</div>
+        <div class="slotRow" id="bans-blue">
+          <button type="button" class="slot" data-type="ban" data-side="blue" data-index="0">
+            <img alt=""><span class="placeholder">⛔</span><span class="remove" title="Remove">×</span>
+          </button>
+          <button type="button" class="slot" data-type="ban" data-side="blue" data-index="1">
+            <img alt=""><span class="placeholder">⛔</span><span class="remove" title="Remove">×</span>
+          </button>
+          <button type="button" class="slot" data-type="ban" data-side="blue" data-index="2">
+            <img alt=""><span class="placeholder">⛔</span><span class="remove" title="Remove">×</span>
+          </button>
+          <button type="button" class="slot" data-type="ban" data-side="blue" data-index="3">
+            <img alt=""><span class="placeholder">⛔</span><span class="remove" title="Remove">×</span>
+          </button>
+          <button type="button" class="slot" data-type="ban" data-side="blue" data-index="4">
+            <img alt=""><span class="placeholder">⛔</span><span class="remove" title="Remove">×</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="sideBar">
+        <div class="title red">RED BANS</div>
+        <div class="slotRow" id="bans-red">
+          <button type="button" class="slot" data-type="ban" data-side="red" data-index="0">
+            <img alt=""><span class="placeholder">⛔</span><span class="remove" title="Remove">×</span>
+          </button>
+          <button type="button" class="slot" data-type="ban" data-side="red" data-index="1">
+            <img alt=""><span class="placeholder">⛔</span><span class="remove" title="Remove">×</span>
+          </button>
+          <button type="button" class="slot" data-type="ban" data-side="red" data-index="2">
+            <img alt=""><span class="placeholder">⛔</span><span class="remove" title="Remove">×</span>
+          </button>
+          <button type="button" class="slot" data-type="ban" data-side="red" data-index="3">
+            <img alt=""><span class="placeholder">⛔</span><span class="remove" title="Remove">×</span>
+          </button>
+          <button type="button" class="slot" data-type="ban" data-side="red" data-index="4">
+            <img alt=""><span class="placeholder">⛔</span><span class="remove" title="Remove">×</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- MIDDLE: PICKS on sides, champions list in center -->
+    <section class="middle">
+      <!-- PICKS – BLUE left -->
+      <aside class="sideCol">
+        <div class="sideItem">
+          <div class="label blue">B1</div>
+          <button type="button" class="slot pickSlot" data-type="pick" data-side="blue" data-index="0">
+            <img alt=""><span class="placeholder">+</span><span class="remove" title="Remove">×</span>
+          </button>
+        </div>
+        <div class="sideItem">
+          <div class="label blue">B2</div>
+          <button type="button" class="slot pickSlot" data-type="pick" data-side="blue" data-index="1">
+            <img alt=""><span class="placeholder">+</span><span class="remove" title="Remove">×</span>
+          </button>
+        </div>
+        <div class="sideItem">
+          <div class="label blue">B3</div>
+          <button type="button" class="slot pickSlot" data-type="pick" data-side="blue" data-index="2">
+            <img alt=""><span class="placeholder">+</span><span class="remove" title="Remove">×</span>
+          </button>
+        </div>
+        <div class="sideItem">
+          <div class="label blue">B4</div>
+          <button type="button" class="slot pickSlot" data-type="pick" data-side="blue" data-index="3">
+            <img alt=""><span class="placeholder">+</span><span class="remove" title="Remove">×</span>
+          </button>
+        </div>
+        <div class="sideItem">
+          <div class="label blue">B5</div>
+          <button type="button" class="slot pickSlot" data-type="pick" data-side="blue" data-index="4">
+            <img alt=""><span class="placeholder">+</span><span class="remove" title="Remove">×</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- CENTER PANEL -->
+      <section class="panel">
+        <div class="toolbar">
+          <input id="search" class="search" type="search" placeholder="Search champion..." />
+          <button id="reset" class="btn" type="button">Reset Draft</button>
+          <button id="swapSides" class="btn" type="button" title="Swap Blue ↔ Red">⇄ Swap Sides</button>
+          <label class="btn loadInline">
+            Load Configuration Files
+            <input id="dataFilePicker" type="file" multiple style="display:none">
+          </label>
+          <span id="fileStatus" class="hint">Files: champions.json + mappings.json + 4 .onnx neural network models</span>
+        </div>
+        <div class="toolbar">
+          <span id="activeInfo" class="hint">Select a slot (ban at top or pick on sides), then click a champion.</span>
+        </div>
+
+        <div id="fallback" class="empty">Click "Load Configuration Files" to upload: champions.json, mappings.json, and 3 .onnx .data model files.</div>
+        <div id="grid" class="grid" aria-live="polite"></div>
+      </section>
+
+      <!-- PICKS – RED right -->
+      <aside class="sideCol">
+        <div class="sideItem">
+          <button type="button" class="slot pickSlot" data-type="pick" data-side="red" data-index="0">
+            <img alt=""><span class="placeholder">+</span><span class="remove" title="Remove">×</span>
+          </button>
+          <div class="label red">R1</div>
+        </div>
+        <div class="sideItem">
+          <button type="button" class="slot pickSlot" data-type="pick" data-side="red" data-index="1">
+            <img alt=""><span class="placeholder">+</span><span class="remove" title="Remove">×</span>
+          </button>
+          <div class="label red">R2</div>
+        </div>
+        <div class="sideItem">
+          <button type="button" class="slot pickSlot" data-type="pick" data-side="red" data-index="2">
+            <img alt=""><span class="placeholder">+</span><span class="remove" title="Remove">×</span>
+          </button>
+          <div class="label red">R3</div>
+        </div>
+        <div class="sideItem">
+          <button type="button" class="slot pickSlot" data-type="pick" data-side="red" data-index="3">
+            <img alt=""><span class="placeholder">+</span><span class="remove" title="Remove">×</span>
+          </button>
+          <div class="label red">R4</div>
+        </div>
+        <div class="sideItem">
+          <button type="button" class="slot pickSlot" data-type="pick" data-side="red" data-index="4">
+            <img alt=""><span class="placeholder">+</span><span class="remove" title="Remove">×</span>
+          </button>
+          <div class="label red">R5</div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- BOTTOM: RUNES PANEL -->
+    <section class="runesPanel" id="runesPanel">
+      <div class="runesPanelHeader">
+        <h3 id="runesPanelTitle">Runes Prediction</h3>
+        <span id="runesPanelHint">Select a pick slot with all 10 champions filled to see runes</span>
+      </div>
+      <div id="runesPanelBody" class="runesPanelBody">
+        <div class="runesPanelEmpty">Complete draft and select a pick to see runes prediction</div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Scripts -->
+  <script src="inference.js"></script>
+  <script src="runes-ui.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

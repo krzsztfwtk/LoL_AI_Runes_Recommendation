@@ -1,0 +1,601 @@
+:root{
+  --bg:#0f1116;
+  --panel:#151823;
+  --slot:#1b2030;
+  --slotBorder:#232a3b;
+  --text:#e6ecff;
+  --muted:#96a0ba;
+  --blue:#5aa4ff;
+  --red:#ff6e7a;
+  --accent:#2a3147;
+  --focus:#e6ecff33;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+  font-size: 14px;
+}
+.wrap{
+  max-width:1400px;
+  margin:0 auto;
+  padding:12px;
+}
+
+/* Bans */
+.top{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:10px;
+  margin-bottom:10px;
+}
+.sideBar{
+  background:var(--panel);
+  border-radius:8px;
+  padding:8px 10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  border:1px solid var(--accent);
+}
+.sideBar .title{
+  font-weight:800;
+  letter-spacing:.5px;
+  font-size:12px;
+  padding:5px 8px;
+  border-radius:6px;
+  background:#1f2333;
+}
+.title.blue{ color:#111; background:linear-gradient(90deg, var(--blue), #6ee1ff); }
+.title.red{ color:#111; background:linear-gradient(90deg, var(--red), #ffb199); }
+.slotRow{
+  display:flex; gap:6px; flex-wrap:wrap;
+}
+
+/* Slots for both bans and picks */
+.slot{
+  position:relative;
+  width:58px; height:58px;
+  border-radius:8px;
+  background:var(--slot);
+  border:1px solid var(--slotBorder);
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden;
+  cursor:pointer;
+  transition:transform .05s ease, border-color .15s ease, box-shadow .15s ease;
+}
+.slot:hover{ transform: translateY(-1px); border-color:#33405c; }
+.slot.active{ box-shadow:0 0 0 3px var(--focus) inset; }
+.slot img{ width:100%; height:100%; object-fit:cover; display:none; }
+.slot.filled img{ display:block; }
+.slot .placeholder{
+  font-size:20px; color:var(--muted); user-select:none;
+}
+.slot .remove{
+  position:absolute; right:3px; top:3px;
+  width:18px; height:18px;
+  border-radius:50%;
+  border:1px solid #2a3147;
+  background:#0b0f19cc;
+  color:#c8d2ff;
+  font-weight:700;
+  font-size:12px;
+  line-height:16px;
+  text-align:center;
+  cursor:pointer;
+  display:none;
+}
+.slot.filled .remove{ display:block; }
+
+/* Champion list */
+.middle{
+  display:grid;
+  grid-template-columns: 100px 1fr 100px;
+  gap:10px;
+  min-height:400px;
+}
+.sideCol{
+  display:flex; flex-direction:column; gap:8px;
+  padding:8px 0;
+}
+.sideItem{
+  display:flex; align-items:center; gap:6px;
+}
+.sideItem .label{
+  width:28px; text-align:right; font-weight:700; font-size:12px; color:var(--muted);
+}
+.sideItem .label.blue{ color:var(--blue); }
+.sideItem .label.red{ color:var(--red); }
+.pickSlot{ width:52px; height:52px; }
+
+.panel{
+  background:var(--panel);
+  border:1px solid var(--accent);
+  border-radius:10px;
+  display:flex; flex-direction:column;
+  overflow:hidden;
+}
+.toolbar{
+  padding:8px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+  border-bottom:1px solid var(--accent);
+  background:#121629;
+}
+.search{
+  flex:1;
+  background:#0f1323;
+  border:1px solid #25304a;
+  color:var(--text);
+  padding:8px 10px; border-radius:6px; outline:none; font-size:13px;
+  min-width:160px;
+}
+.btn{
+  background:#0f1323; color:#d9e2ff; border:1px solid #2a3451;
+  padding:8px 10px; border-radius:6px; cursor:pointer; font-weight:600; font-size:13px;
+}
+.btn:hover{ background:#131a33; }
+.btn:disabled{ opacity:0.5; cursor:not-allowed; }
+.hint{ color:var(--muted); font-size:12px; }
+
+.grid{
+  padding:10px;
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap:10px;
+  overflow:auto;
+  max-height: 300px;
+}
+.champ{
+  background:#0f1323; border:1px solid #26324f;
+  border-radius:8px; padding:6px; cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  transition:transform .05s ease, border-color .15s ease, background .15s ease;
+}
+.champ:hover{ transform: translateY(-1px); border-color:#3b4c76; background:#111836; }
+.champ img{ width:56px; height:56px; border-radius:6px; object-fit:cover; display:block; }
+.champ .name{ font-size:11px; text-align:center; color:#dbe5ff; }
+.champ.taken{
+  opacity:.45; filter:grayscale(.3); pointer-events:none;
+}
+
+.empty{
+  padding:16px; text-align:center; color:var(--muted);
+  display:none;
+}
+.empty.show{ display:block; }
+.loadInline{
+  display:inline-block;
+}
+
+@media (max-width: 920px){
+  .middle{ grid-template-columns: 1fr; }
+  .sideCol{ order:2; flex-direction:row; flex-wrap:wrap; }
+  .sideItem{ flex: 1 1 120px; }
+}
+
+/* Loading/Error messages */
+.loadingSpinner {
+  text-align: center;
+  padding: 30px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.errorMsg {
+  text-align: center;
+  padding: 30px;
+  color: var(--red);
+  font-size: 14px;
+}
+
+/* Runes Interface */
+.runesInterface {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.styleSelection {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: #0f1323;
+  border-radius: 6px;
+}
+
+.styleLabel {
+  font-weight: 700;
+  color: var(--text);
+  font-size: 12px;
+  margin-right: 8px;
+}
+
+.styleLabel:not(:first-child) {
+  margin-left: 24px;
+}
+
+.styleTabs {
+  display: flex;
+  gap: 6px;
+}
+
+.styleTab {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  border: 2px solid #232a3b;
+  background: #1b2030;
+  cursor: pointer;
+  padding: 5px;
+  transition: all 0.2s ease;
+}
+
+.styleTab:hover {
+  border-color: #6ee1ff;
+  transform: scale(1.05);
+}
+
+.styleTab.active {
+  border-color: #6ee1ff;
+  box-shadow: 0 0 10px rgba(110, 225, 255, 0.4);
+  background: #232a3b;
+}
+
+.styleTab img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Runes layout */
+.runesLayout {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.runeTree {
+  background: #0f1323;
+  border: 1px solid #26324f;
+  border-radius: 8px;
+  padding: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.runeTree.primary {
+  flex: 2;
+}
+
+.runeTree.secondary {
+  flex: 1.5;
+}
+
+.runeTree.shards {
+  flex: 1;
+}
+
+.runeTree h3 {
+  margin: 0 0 10px 0;
+  font-size: 12px;
+  color: #dbe5ff;
+  text-align: center;
+  font-weight: 700;
+}
+
+.runeSlot {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.runeSlot:last-child {
+  margin-bottom: 0;
+}
+
+.runeOption {
+  background: #1b2030;
+  border: 2px solid #232a3b;
+  border-radius: 6px;
+  padding: 3px;
+  text-align: center;
+  transition: all 0.2s ease;
+  width: 52px;
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.runeOption.small {
+  width: 46px;
+}
+
+.keystoneSlot .runeOption {
+  width: 68px;
+}
+
+.runeOption.top {
+  border-color: #6ee1ff;
+  box-shadow: 0 0 6px rgba(110, 225, 255, 0.3);
+}
+
+.runeOption img {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  margin: 0 0 2px 0;
+  display: block;
+  flex-shrink: 0;
+}
+
+.runeOption.small img {
+  width: 36px;
+  height: 36px;
+}
+
+.keystoneSlot .runeOption img {
+  width: 56px;
+  height: 56px;
+}
+
+.runeProb {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  color: #6ee1ff;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+/* Stat Shards */
+.shardRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.shardRow:last-child {
+  margin-bottom: 0;
+}
+
+.shardRowInner {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+}
+
+.shardOption {
+  background: #1b2030;
+  border: 2px solid #232a3b;
+  border-radius: 6px;
+  padding: 3px;
+  text-align: center;
+  width: 52px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.shardOption.top {
+  border-color: #6ee1ff;
+  box-shadow: 0 0 6px rgba(110, 225, 255, 0.3);
+}
+
+.shardOption img {
+  width: 42px;
+  height: 42px;
+  margin: 0 0 2px 0;
+  display: block;
+  flex-shrink: 0;
+}
+
+.shardProb {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  color: #6ee1ff;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+/* Tooltips */
+.runeTooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.95);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 5px;
+  font-size: 11px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 1000;
+  margin-bottom: 6px;
+  border: 1px solid #6ee1ff;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+}
+
+.runeTooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #6ee1ff;
+}
+
+.runeOption:hover .runeTooltip,
+.shardOption:hover .runeTooltip {
+  opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .runesLayout {
+    flex-direction: column;
+  }
+  
+  .runeTree {
+    width: 100%;
+  }
+}
+
+/* Runes Panel */
+.runesPanel {
+  background: var(--panel);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.runesPanelHeader {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--accent);
+  background: #121629;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.runesPanelHeader h3 {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#runesPanelHint {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.runesPanelBody {
+  padding: 12px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.runesPanelEmpty {
+  text-align: center;
+  padding: 30px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* Lock button */
+.lockBtn {
+  background: #0f1323;
+  border: 1px solid #2a3451;
+  color: #96a0ba;
+  padding: 4px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lockBtn:hover {
+  background: #131a33;
+  border-color: #3b4c76;
+}
+
+.lockBtn.locked {
+  color: #6ee1ff;
+  border-color: #6ee1ff;
+  background: #1b2030;
+}
+
+/* Summoner Spells */
+.runeTree.summoners {
+  flex: 1.5;
+}
+
+.summonerRow {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.summonerOption {
+  background: #1b2030;
+  border: 2px solid #232a3b;
+  border-radius: 6px;
+  padding: 3px;
+  text-align: center;
+  width: 52px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.summonerOption.top {
+  border-color: #6ee1ff;
+  box-shadow: 0 0 6px rgba(110, 225, 255, 0.3);
+}
+
+.summonerOption img {
+  width: 42px;
+  height: 42px;
+  border-radius: 6px;
+  margin: 0 0 2px 0;
+  display: block;
+  flex-shrink: 0;
+}
+
+.summonerProb {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  color: #6ee1ff;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+.runesPanel .runeTree.summoners {
+  flex: 1;
+}
+
+.runesPanel .summonerOption {
+  width: 50px;
+}
+
+.runesPanel .summonerOption img {
+  width: 38px;
+  height: 38px;
+}
+
+.runesPanel .summonerProb {
+  font-size: 10px;
+}
