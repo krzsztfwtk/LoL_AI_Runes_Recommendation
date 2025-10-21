@@ -8,6 +8,8 @@ League of Legends has many interacting factors during champion select: lane matc
 
 Neural networks can learn these complex patterns from high-elo play. The AI models in this project are trained on Grandmaster+ Korean server matches to predict what keystones, lesser runes, shards and summoner spells high-elo players would pick given a specific draft. Players from the highest ranks probably understand runes and matchups better than average players. However, you still need game knowledge to understand why a recommendation makes sense and to apply it effectively in your games.
 
+---
+
 ## Usage
 
 **1. Download and open**
@@ -35,6 +37,8 @@ Click pick slots to select champions for both teams. Bans are optional and only 
 Select a pick slot to see rune and summoner spell recommendations. Predictions update automatically as you change the draft. Click the lock icon 🔒 to pin predictions to a specific slot. Even when you change other champions, recommendations for the locked champion remain visible.
 
 ![Predictions panel](images/usage4.png)
+
+---
 
 ## How does it work?
 
@@ -76,6 +80,8 @@ The project contains four separate models:
    - Task: predict two summoner spells out of 9 competitive options
    - Output: probabilities `[9]` that represent marginal probabilities for selecting each spell. Softmax and multiplied by 2, to ensure the sum is 2.0. Model is trained to not give probability > 1.0, but it is not strictly enforced.
    - Loss: multi-label cross-entropy on the selected spells
+
+---
 
 ## Examples
 
