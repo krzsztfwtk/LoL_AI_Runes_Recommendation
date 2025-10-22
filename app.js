@@ -133,6 +133,8 @@ function setActive(slot) {
 }
 
 function updateActiveInfo() {
+  positions = ["TOP", "MID", "JGL", "ADC", "SUP"]
+
   if (!state.active) {
     activeInfo.textContent = 'Select a slot (ban at top or pick on sides), then click a champion.';
     return;
@@ -140,7 +142,7 @@ function updateActiveInfo() {
   const { type, side, index } = state.active;
   const S = side === 'blue' ? 'Blue' : 'Red';
   const T = type === 'pick' ? 'Pick' : 'Ban';
-  activeInfo.textContent = `Active slot: ${T} – ${S} – #${index + 1}`;
+  activeInfo.textContent = `Active slot: ${T} – ${S} ${positions[index]}`;
 }
 
 function clearSlot(slot) {
