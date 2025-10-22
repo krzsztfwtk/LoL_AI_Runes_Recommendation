@@ -10,6 +10,8 @@ const state = {
   version: '15.20.1'
 };
 
+const CONFIG_BASE_PATH = './config/';
+
 const bucket = (t) => (t === 'pick' ? 'picks' : 'bans');
 
 const grid = document.getElementById('grid');
@@ -411,5 +413,76 @@ function updateRunesPanel() {
   showRunesInPanel(champ, picks, playerIdx, state.runesLocked);
 }
 
+// Detect if running via HTTP/HTTPS (any server) or file:// protocol (local file system)
+function isServed() {
+  return window.location.protocol.startsWith('http');
+}
+
+// Auto-load function for served environments
+async function autoLoadDataFiles() {
+  fileStatus.textContent = 'Auto-loading data files...';
+  fileStatus.style.color = '#ffd37a';
+  
+  try {
+    // Load champions.json
+    const champResponse = await fetch(`${CONFIG_BASE_PATH}champions.json`);
+    if (!champResponse.ok) throw new Error('Failed to load champions.json');
+    const champData = await champResponse.json();
+    initWithChampions(champData);
+    
+    // Load mappings.json
+    const mapResponse = await fetch(`${CONFIG_BASE_PATH}mappings.json`);
+    if (!mapResponse.ok) throw new Error('Failed to load mappings.json');
+    const mappingsData = await mapResponse.json();
+    
+    // Load all ONNX models
+    const requiredModels = ['keystone.onnx', 'lesser_runes.onnx', 'shards.onnx', 'summoner_spells.onnx'];
+    const modelFiles = {};
+    
+    for (const modelName of requiredModels) {
+      const onnxResponse = await fetch(`${CONFIG_BASE_PATH}${modelName}`);
+      if (!onnxResponse.ok) throw new Error(`Failed to load ${modelName}`);
+      const onnxBlob = await onnxResponse.blob();
+      
+      // Try to load .data file (optional)
+      let dataBlob = null;
+      try {
+        const dataResponse = await fetch(`${CONFIG_BASE_PATH}${modelName}.data`);
+        if (dataResponse.ok) {
+          dataBlob = await dataResponse.blob();
+        }
+      } catch (e) {
+        console.warn(`No .data file for ${modelName}`);
+      }
+      
+      modelFiles[modelName] = {
+        onnx: new File([onnxBlob], modelName, { type: 'application/octet-stream' }),
+        data: dataBlob ? new File([dataBlob], `${modelName}.data`, { type: 'application/octet-stream' }) : null
+      };
+    }
+    
+    await window.runePredictor.loadFromFiles(mappingsData, modelFiles);
+    
+    fileStatus.textContent = 'All files loaded ✓';
+    fileStatus.style.color = '#6ee1ff';
+    fallbackBox.classList.remove('show');
+    updateRunesPanel();
+    
+  } catch (err) {
+    fileStatus.textContent = 'Auto-load failed - use manual file picker below';
+    fileStatus.style.color = '#ff6e7a';
+    console.error('Auto-load error:', err);
+    fallbackBox.classList.add('show');
+  }
+}
+
+// Initialize
 setupSlots();
-fallbackBox.classList.add('show');
+
+if (isServed()) {
+  autoLoadDataFiles();
+} else {
+  fallbackBox.classList.add('show');
+  fileStatus.textContent = 'Running locally - load configuration files to start';
+  fileStatus.style.color = '#ffd37a';
+}

@@ -1,6 +1,6 @@
 # LoL_AI_Runes_Recommendation
 
-Simple tool that recommends runes and summoner spells for League of Legends champions based on based on draft composition of both teams
+Simple tool that recommends runes and summoner spells for League of Legends champions based on based on draft composition of both teams. Created on patch 25.20 (Worlds 2025 patch).
 
 ## Introduction
 
@@ -14,31 +14,37 @@ Players from the highest ranks probably understand runes and matchups better tha
 
 ## Usage
 
-**1. Download and open**
+You can use GitHub pages version: visit [lol-ai-runes.krzsztf.com](https://lol-ai-runes.krzsztf.com/) and skip **step 1.** and **step 2.**.
 
-Clone or download the repository and open `index.html` in your browser.
+**Step 1. Download and open**
 
-**2. Load configuration files**
+Clone or download the repository. Open `index.html` in your browser. 
 
-Click "Load Configuration Files"
+Alternatively, you can host it yourself with the command `python -m http.server 8000 --bind 127.0.0.1`, then go to [http://127.0.0.1:8000/](http://127.0.0.1:8000/) and skip **step 2.**
+
+**Step 2. Load configuration files**
+
+Due to browser CORS (Cross-Origin Resource Sharing) security policies, if you open index.html directly from your file system, you have to load the configuration manually.
+
+Click **"Load Configuration Files"**
 
 ![Load Configuration Files](images/usage1.png)
 
-then go to the `config` directory, select all files and click "open".
+then navigate to the `config` directory, select all files and click **"open"**.
 
 ![Files selection](images/usage2.png)
 
-**3. Draft champions**
+**Step 3. Draft champions**
 
-Click pick slots to select champions for both teams. Bans are optional and only prevent picking that champion in the UI — they don't affect predictions.
+Click pick slots to select champions for both teams. Bans are optional and only prevent picking that champion in the UI — they don't affect recommendations.
 
 ![Champion selection](images/usage3.png)
 
-**4. View recommendations**
+**Step 4. View recommendations**
 
-Select a pick slot to see rune and summoner spell recommendations. Predictions update automatically as you change the draft. Click the lock icon 🔒 to pin predictions to a specific slot. Even when you pick other slot, recommendations for the locked🔒 champion remain visible.
+Select a pick slot to see runes and summoner spells recommendations. Predictions update automatically as you change the draft. Click the lock icon 🔒 to pin predictions to a specific slot. Even when you pick other slot, recommendations for the locked🔒 champion remain visible.
 
-![Predictions panel](images/usage4.png)
+![Recommendations panel](images/usage4.png)
 
 ---
 
@@ -125,7 +131,7 @@ Nami + Lucian (Red side)
 
 ## Limitations
 
-- Predictions are statistical patterns from training data, not absolute rules
+- Recommendations are statistical patterns from training data, not absolute rules
 - Unusual probabilities (like >100%) in rare drafts reflect strong statistical signals but may also indicate data quirks
 - AI was trained to predict only what Korean Grandmaster+ players would pick. It does not really understand what the perks of each rune are.
 
