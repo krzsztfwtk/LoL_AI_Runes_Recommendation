@@ -4,9 +4,11 @@ Simple tool that recommends runes and summoner spells for League of Legends cham
 
 ## Introduction
 
-League of Legends has many interacting factors during champion select: lane matchups, role synergies, team composition, and strategic choices. Simple methods like rule-based systems or win rate analysis are insufficient here. Rule-based approaches cannot capture the complex interactions between dozens of champions, five positions, and hundreds of rune combinations. Win rate analysis is problematic because match outcomes depend on player skill, teamwork, and macro decisions. Runes choice is only a small factor. This creates too much noise in the data, requiring an impractical amount of matches to extract meaningful signals.
+League of Legends has many interacting factors which should be considered to prepare loadout before match: lane matchups, role synergies, team composition. There are many websites which may recommend you runes for a specific champion. These websites use simple methods like pick rate or win rate of a specific champion on a given role. This approach fails to capture the complex interactions between other champions, two sides, five unique positions on each side, 1.6 · 10²² possible champion drafts (where order matters) and 1.3 · 10⁸ possible loadout combinations (including keystones, lesser runes, and summoner spells).
 
-Neural networks can learn these complex patterns from high-elo play. The AI models in this project are trained on Grandmaster+ Korean server matches to predict what keystones, lesser runes, shards and summoner spells high-elo players would pick given a specific draft. Players from the highest ranks probably understand runes and matchups better than average players. However, you still need game knowledge to understand why a recommendation makes sense and to apply it effectively in your games.
+Approach of this project is to utilize neural networks to learn these complex patterns from high-elo play. The AI models in this project are trained on Grandmaster+ Korean server matches to predict what keystones, lesser runes, shards and summoner spells high-elo players would pick given a specific draft. Win rate analysis is problematic because match outcomes depend on players in-game skill. Runes choice is only a small factor. This creates too much noise in the data, requiring an large amount of matches to extract meaningful signals and there aren't enough matches played on Grandmaster+ KR. Therefore, the goal of this project is to imitate high-elo players rather than to make the AI understand runes on its own and suggest them based on their statistics.
+
+Players from the highest ranks probably understand runes and matchups better than average players. However, you still need game knowledge to understand why a recommendation makes sense and to apply it effectively in your games.
 
 ---
 
@@ -34,7 +36,7 @@ Click pick slots to select champions for both teams. Bans are optional and only 
 
 **4. View recommendations**
 
-Select a pick slot to see rune and summoner spell recommendations. Predictions update automatically as you change the draft. Click the lock icon 🔒 to pin predictions to a specific slot. Even when you change other champions, recommendations for the locked champion remain visible.
+Select a pick slot to see rune and summoner spell recommendations. Predictions update automatically as you change the draft. Click the lock icon 🔒 to pin predictions to a specific slot. Even when you pick other slot, recommendations for the locked🔒 champion remain visible.
 
 ![Predictions panel](images/usage4.png)
 
@@ -90,7 +92,7 @@ The project contains four separate models:
 | Kassadin vs LeBlanc | Kassadin vs Fizz |
 |---------------------|------------------|
 | ![Kassadin vs LeBlanc](images/example11.png) | ![Kassadin vs Fizz](images/example12.png) |
-| **Second Wind** recommended. LeBlanc is ranged and can easily poke off Bone Plating from distance, making healing after trades more valuable. | **Bone Plating** recommended. Fizz is melee and must commit to all-in, making burst damage reduction more effective than sustained healing. |
+| **Second Wind** recommended. LeBlanc is ranged and can easily poke off Bone Plating from distance, making healing after trades more valuable. | **Bone Plating** recommended. Fizz is melee and must commit to all-in, making burst damage reduction more effective than healing after trades. |
 
 ### Example 2: Enemy Composition Influence
 
@@ -99,19 +101,19 @@ The project contains four separate models:
 | ![Jinx standard](images/example21.png) | ![Jinx vs CC comp](images/example22.png) |
 | Flash + Barrier (standard ADC setup) | **Cleanse probability increases to 106.7%**. This exceeds 100% because the model detects extreme value for Cleanse against heavy CC composition. This can be treated as either a bug or a feature highlighting critical importance. |
 
-### Example 3: Keystone and Summoner Adaptation
+### Example 3: Off-meta champion recommendation
 
 | Garen vs Fizz (mid) | Garen vs Ryze (mid) |
 |---------------------|---------------|
 | ![Garen vs Fizz](images/example31.png) | ![Garen vs Ryze](images/example32.png) |
-| **Conqueror + Ignite**. Garen can win melee-range all-ins against the assassin. | **Phase Rush + Teleport**. Phase Rush provides mobility to chase/escape from ranged poke. Teleport allows free recalls since Ryze controls wave and Garen must trade HP for last-hitting minions. |
+| **Conqueror + Ignite**. Fizz is melee-range assassin. This setup makes Garen will all-in. | **Phase Rush + Teleport**. Phase Rush provides mobility to chase ranged poke. Teleport allows free recalls since Ryze controls wave and Garen must trade HP for last-hitting minions. |
 
 ### Example 4: Allied Synergy
 
 | Nami + Lucian | Nami + Twitch |
 |---------------|---------------|
 | ![Nami + Lucian](images/example41.png) | ![Nami + Twitch](images/example42.png) |
-| **10.2% Ignite** probability. Lucian is aggressive early-game ADC, synergizes with Ignite for kill pressure. | **8.0% Ignite** probability. Twitch wants to play defensively and scale, reducing value of aggressive summoner. |
+| **10.2% Ignite** probability. Lucian is aggressive early-game ADC, synergizes with Ignite on support for kill pressure. | **8.0% Ignite** probability. Twitch wants to play defensively and scale, increasing value of defensive summoners. |
 
 ### Example 5: Side Influence
 
@@ -119,15 +121,12 @@ Nami + Lucian (Red side)
 ![Red side](images/example41.png)
 **Even higher Ignite probability** on red side. Red side bot lane is harder to gank and offers better tri-brush control which reduces the need for defensive summoner spells.
 
-Remember that model outputs are statistical recommendations taken from patterns in the training dataset. They can reflect oddities in the data (e.g. unusually high probability for an off-meta keystone in rare configurations). Treat those as prompts to investigate, not absolute rules.
-
 ---
 
 ## Limitations
 
 - Predictions are statistical patterns from training data, not absolute rules
 - Unusual probabilities (like >100%) in rare drafts reflect strong statistical signals but may also indicate data quirks
-- Bans are UI-only and don't modify model inputs
 - AI was trained to predict only what Korean Grandmaster+ players would pick. It does not really understand what the perks of each rune are.
 
 ---
