@@ -109,7 +109,7 @@ body{
 }
 .sideItem .label.blue{ color:var(--blue); }
 .sideItem .label.red{ color:var(--red); }
-.pickSlot{ width:52px; height:52px; }
+.pickSlot{ width:68px; height:68px; }
 
 .panel{
   background:var(--panel);
