@@ -133,7 +133,7 @@ function setActive(slot) {
 }
 
 function updateActiveInfo() {
-  positions = ["TOP", "MID", "JGL", "ADC", "SUP"]
+  positions = ["TOP", "JGL", "MID", "ADC", "SUP"]
 
   if (!state.active) {
     activeInfo.textContent = 'Select a slot (ban at top or pick on sides), then click a champion.';
