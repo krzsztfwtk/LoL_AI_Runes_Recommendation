@@ -114,7 +114,7 @@ The project contains four separate models:
 | Garen vs Fizz (mid) | Garen vs Ryze (mid) |
 |---------------------|---------------|
 | ![Garen vs Fizz](images/example31.png) | ![Garen vs Ryze](images/example32.png) |
-| **Conqueror + Ignite**. Fizz is melee-range assassin. This setup makes Garen will all-in. | **Phase Rush + Teleport**. Phase Rush provides mobility to chase ranged poke. Teleport allows free recalls since Ryze controls wave and Garen must trade HP for last-hitting minions. |
+| **Conqueror + Ignite**. Fizz is melee-range assassin. This setup makes Garen will all-in. | **Phase Rush + Teleport**. Phase Rush provides mobility to chase ranged champion. Teleport allows free recalls since Ryze controls wave and Garen must trade HP for last-hitting minions. |
 
 ### Example 4: Allied Synergy
 
