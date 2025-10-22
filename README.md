@@ -1,5 +1,7 @@
 # LoL AI Runes Recommendation
 
+**Available at: [lol-ai-runes.krzsztf.com](https://lol-ai-runes.krzsztf.com/)**
+
 Simple tool that recommends runes and summoner spells for League of Legends champions based on based on draft composition of both teams. Created on patch 25.20 (Worlds 2025 patch).
 
 ## Introduction
@@ -14,7 +16,7 @@ Players from the highest ranks probably understand runes and matchups better tha
 
 ## Usage
 
-You can use GitHub pages version: visit [lol-ai-runes.krzsztf.com](https://lol-ai-runes.krzsztf.com/) and skip **step 1.** and **step 2.**.
+You can use GitHub pages version: visit [lol-ai-runes.krzsztf.com](https://lol-ai-runes.krzsztf.com/) and skip **step 1.** and **step 2.**
 
 **Step 1. Download and open**
 
@@ -56,8 +58,8 @@ Training data: matche data was collected via the Riot Games API from Grandmaster
 
 All models share the same input features:
 
-- `champions_blue`: int[5] — blue team champion IDs in draft order (top, jg, mid, bot, sup)
-- `champions_red`: int[5] — red team champion IDs in draft order
+- `champions_blue`: int[5] — blue team champion IDs in order (top, jg, mid, bot, sup)
+- `champions_red`: int[5] — red team champion IDs in order
 - `player_champion`: int — the player's champion ID
 - `position`: int — 0=top, 1=jg, 2=mid, 3=bot, 4=sup
 - `side`: int — 0=blue, 1=red
@@ -124,8 +126,8 @@ The project contains four separate models:
 ### Example 5: Side Influence
 
 Nami + Lucian (Red side)
-![Red side](images/example41.png)
-**Even higher Ignite probability** on red side. Red side bot lane is harder to gank and offers better tri-brush control which reduces the need for defensive summoner spells.
+![Red side](images/example43.png)
+**14.6% Ignite** probability on red side. Red side bot lane is harder to gank and offers better tri-brush control which reduces the need for defensive summoner spells.
 
 ---
 
