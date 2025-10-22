@@ -1,4 +1,4 @@
-# LoL_AI_Runes_Recommendation
+# LoL AI Runes Recommendation
 
 Simple tool that recommends runes and summoner spells for League of Legends champions based on based on draft composition of both teams. Created on patch 25.20 (Worlds 2025 patch).
 
